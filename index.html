@@ -9,7 +9,7 @@
 
 <h2>🔥 محول لينكات أمازون - Yassmin Deals</h2>
 
-<input id="link" oninput="convert()" placeholder="حطي لينك أمازون هنا"
+<input id="link" onclick="this.value=''" oninput="convert()" placeholder="حطي لينك أمازون هنا"
 style="width:90%;padding:15px;font-size:16px;border-radius:10px;border:1px solid #ccc;"><br><br>
 
 <p id="result" style="margin-top:20px;font-weight:bold;"></p>
@@ -17,6 +17,11 @@ style="width:90%;padding:15px;font-size:16px;border-radius:10px;border:1px solid
 <button onclick="copyLink()"
 style="width:90%;padding:15px;font-size:16px;background:#007bff;color:#fff;border:none;border-radius:10px;">
 نسخ اللينك
+</button>
+
+<button onclick="clearAll()"
+style="width:90%;padding:15px;margin-top:10px;font-size:16px;background:#dc3545;color:#fff;border:none;border-radius:10px;">
+مسح
 </button>
 
 <script>
@@ -29,23 +34,52 @@ function convert() {
     return;
   }
 
-  // حذف أي tag قديم
-  url = url.replace(/tag=[^&]*/g, '');
+  if(!url.includes("amazon.eg")){
+    document.getElementById("result").innerText = "❌ اللينك مش أمازون";
+    return;
+  }
 
-  // تنظيف اللينك
-  url = url.replace(/[?&]+$/, '');
+  // 🧹 تنظيف أولي
+  let base = url.split("?")[0];
+  let params = "";
+
+  if(url.includes("?")){
+    let query = url.split("?")[1].split("&");
+    let cleanParams = [];
+
+    for(let p of query){
+      if(p.startsWith("tag=")) continue;
+      if(p.startsWith("linkCode") || p.startsWith("linkId") || p.startsWith("ref")) continue;
+      if(p !== "") cleanParams.push(p);
+    }
+
+    if(cleanParams.length > 0){
+      params = "?" + cleanParams.join("&");
+    }
+  }
 
   let newLink;
 
-  if(url.includes("amazon.eg")){
-    if(url.includes("?")){
-      newLink = url + "&tag=offers201508-21";
+  // 🟢 منتج
+  if(base.includes("/dp/") || base.includes("/gp/product/")){
+    let id;
+
+    if(base.includes("/dp/")){
+      id = base.split("/dp/")[1].split("/")[0];
     } else {
-      newLink = url + "?tag=offers201508-21";
+      id = base.split("/gp/product/")[1].split("/")[0];
     }
-  } else {
-    document.getElementById("result").innerText = "❌ اللينك مش أمازون";
-    return;
+
+    newLink = "https://www.amazon.eg/dp/" + id + "/?tag=offers201508-21";
+  }
+
+  // 🟣 عرض أو أي صفحة
+  else {
+    if(params){
+      newLink = base + params + "&tag=offers201508-21";
+    } else {
+      newLink = base + "?tag=offers201508-21";
+    }
   }
 
   document.getElementById("result").innerText = newLink;
@@ -58,6 +92,11 @@ function copyLink() {
     navigator.clipboard.writeText(text);
     alert("تم النسخ ✅");
   }
+}
+
+function clearAll() {
+  document.getElementById("link").value = "";
+  document.getElementById("result").innerText = "";
 }
 
 </script>
