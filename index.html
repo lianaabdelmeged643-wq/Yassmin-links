@@ -2,7 +2,7 @@
 <html>
 <head>
 <meta charset="UTF-8">
-<title>Yassmin Links</title>
+<title>Yassmin Deals</title>
 </head>
 
 <body style="font-family:Arial;text-align:center;padding:30px;background:#f5f5f5;">
@@ -20,6 +20,7 @@ style="width:90%;padding:15px;font-size:16px;background:#007bff;color:#fff;borde
 </button>
 
 <script>
+
 function convert() {
   let url = document.getElementById("link").value.trim();
 
@@ -28,31 +29,22 @@ function convert() {
     return;
   }
 
-  // 🧹 إزالة أي tag قديم
-  url = url.replace(/([?&])tag=[^&]*/g, '');
+  // حذف أي tag قديم
+  url = url.replace(/tag=[^&]*/g, '');
 
-  // 🧹 تنظيف اللينك
+  // تنظيف اللينك
   url = url.replace(/[?&]+$/, '');
-  url = url.replace(/\?&/, '?');
-
-  // 🔍 استخراج ID المنتج
-  let match = url.match(/(?:dp|gp\/product)\/([A-Z0-9]+)/);
 
   let newLink;
 
-  if(match){
-    newLink = "https://www.amazon.eg/dp/" + match[1] + "/?tag=offers201508-21";
-  } 
-  else if(url.includes("amazon.eg")) {
-    // 🔥 أي لينك تاني (عرض / صفحة)
+  if(url.includes("amazon.eg")){
     if(url.includes("?")){
       newLink = url + "&tag=offers201508-21";
     } else {
       newLink = url + "?tag=offers201508-21";
     }
-  } 
-  else {
-    document.getElementById("result").innerText = "اللينك مش مظبوط ❌";
+  } else {
+    document.getElementById("result").innerText = "❌ اللينك مش أمازون";
     return;
   }
 
@@ -64,9 +56,10 @@ function copyLink() {
 
   if(text){
     navigator.clipboard.writeText(text);
-    alert("تم نسخ اللينك ✅");
+    alert("تم النسخ ✅");
   }
 }
+
 </script>
 
 </body>
