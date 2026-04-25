@@ -39,30 +39,55 @@ function convert() {
     return;
   }
 
-  // 🔹 نحذف أي tag قديم بدون regex
-  let parts = url.split("&");
-  let cleanParts = [];
+  // 🧹 تنظيف أولي
+  let base = url.split("?")[0];
+  let params = "";
 
-  for(let p of parts){
-    if(p.indexOf("tag=") === -1){
-      cleanParts.push(p);
+  if(url.includes("?")){
+    let query = url.split("?")[1].split("&");
+    let cleanParams = [];
+
+    for(let p of query){
+      if(p.startsWith("tag=")) continue;
+      if(p.startsWith("linkCode") || p.startsWith("linkId") || p.startsWith("ref")) continue;
+      if(p !== "") cleanParams.push(p);
+    }
+
+    if(cleanParams.length > 0){
+      params = "?" + cleanParams.join("&");
     }
   }
 
-  let cleanUrl = cleanParts.join("&");
+  let newLink;
 
-  // 🔹 لو مفيش ? أصلاً
-  if(cleanUrl.indexOf("?") === -1){
-    cleanUrl = cleanUrl + "?tag=offers201508-21";
-  } else {
-    cleanUrl = cleanUrl + "&tag=offers201508-21";
+  // 🟢 منتج
+  if(base.includes("/dp/") || base.includes("/gp/product/")){
+    let id;
+
+    if(base.includes("/dp/")){
+      id = base.split("/dp/")[1].split("/")[0];
+    } else {
+      id = base.split("/gp/product/")[1].split("/")[0];
+    }
+
+    newLink = "https://www.amazon.eg/dp/" + id + "/?tag=offers201508-21";
   }
 
-  document.getElementById("result").innerText = cleanUrl;
+  // 🟣 عرض أو أي صفحة
+  else {
+    if(params){
+      newLink = base + params + "&tag=offers201508-21";
+    } else {
+      newLink = base + "?tag=offers201508-21";
+    }
+  }
+
+  document.getElementById("result").innerText = newLink;
 }
 
 function copyLink() {
   let text = document.getElementById("result").innerText;
+
   if(text){
     navigator.clipboard.writeText(text);
     alert("تم النسخ ✅");
