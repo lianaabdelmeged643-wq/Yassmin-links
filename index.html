@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Yassmin Links</title>
+</head>
+
+<body style="font-family:Arial;text-align:center;padding:30px;">
+
+<h2>حوّلي اللينك لأفلييت</h2>
+
+<input id="link" placeholder="حطي لينك المنتج هنا"
+style="width:90%;padding:15px;font-size:16px;border-radius:10px;border:1px solid #ccc;"><br><br>
+
+<button onclick="convert()"
+style="width:90%;padding:18px;font-size:18px;background:#28a745;color:#fff;border:none;border-radius:10px;">
+حوّل اللينك
+</button>
+
+<p id="result" style="margin-top:20px;"></p>
+
+<button onclick="copyLink()"
+style="width:90%;padding:15px;font-size:16px;background:#007bff;color:#fff;border:none;border-radius:10px;">
+نسخ اللينك
+</button>
+
+<script>
+function convert() {
+  let url = document.getElementById("link").value;
+
+  let match = url.match(/dp\/([A-Z0-9]+)/);
+
+  if(match){
+    let newLink = "https://www.amazon.eg/dp/" + match[1] + "/?tag=offers201508-21";
+    document.getElementById("result").innerText = newLink;
+  } else {
+    document.getElementById("result").innerText = "اللينك مش مظبوط";
+  }
+}
+
+function copyLink() {
+  let text = document.getElementById("result").innerText;
+  navigator.clipboard.writeText(text);
+}
+</script>
+
+</body>
+</html>
